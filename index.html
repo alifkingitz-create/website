@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Tailwind for original designs -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>Love Website</title>
+
+<style>
+
+/* GLOBAL FIX */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:black;
+  font-family:sans-serif;
+}
+
+/* PAGE SYSTEM */
+.page{
+  display:none;
+  height:100vh;
+  width:100%;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+.active{display:flex;}
+
+/* MOBILE FIX */
+@media(max-width:600px){
+  .letter-image{width:80px;}
+}
+
+/* ===== SCANNER (keep style clean) ===== */
+.scanner{
+  width:90%;
+  max-width:320px;
+  height:60vh;
+  border:2px solid #00ffcc;
+  border-radius:15px;
+  overflow:hidden;
+  position:relative;
+}
+video{width:100%;height:100%;object-fit:cover;}
+.scan-line{
+  position:absolute;
+  width:100%;
+  height:3px;
+  background:#00ffcc;
+  animation:scan 2s infinite;
+}
+@keyframes scan{
+  0%{top:0;}100%{top:100%;}
+}
+
+/* ENVELOPE IMAGE FIX */
+.envelope-container{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+}
+
+.photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 MUSIC -->
+<audio id="bgMusic" src="song.mp3" loop></audio>
+
+<!-- PAGE 1 (Swipe Button ORIGINAL) -->
+<div id="page1" class="page active">
+  <a class="swipe" onclick="startApp()">Get Started</a>
+</div>
+
+<!-- PAGE 2 (LOGIN ORIGINAL STYLE SIMPLIFIED) -->
+<div id="page2" class="page">
+  <form onsubmit="goScanner(event)" class="flex flex-col gap-3">
+    <input class="p-2 rounded" placeholder="Username">
+    <input class="p-2 rounded" type="password" placeholder="Password">
+    <button class="bg-pink-500 text-white p-2 rounded">Continue</button>
+    <p id="errorMsg" class="text-red-500 hidden">Wrong Password ❌</p>
+  </form>
+</div>
+
+<!-- PAGE 3 (SCANNER) -->
+<div id="page3" class="page">
+  <button onclick="startCamera()" class="bg-green-400 px-4 py-2 rounded">Start Scanning</button>
+
+  <div id="scannerBox" class="hidden mt-4">
+    <div class="scanner">
+      <video id="camera" autoplay playsinline></video>
+      <div class="scan-line"></div>
+    </div>
+    <p id="scanStatus" class="text-white mt-2">Scanning...</p>
+  </div>
+</div>
+
+<!-- PAGE 4 (LOADER ORIGINAL STYLE SIMPLIFIED) -->
+<div id="page4" class="page">
+  <div class="text-cyan-400 animate-pulse">Loading...</div>
+</div>
+
+<!-- PAGE 5 (ENVELOPE ORIGINAL STRUCTURE) -->
+<div id="page5" class="page">
+
+<div class="envelope-container">
+
+  <div class="letter-image" onclick="openLetter(this)">
+    <div class="animated-mail">
+      <div class="letter"><img src="img1.jpg" class="photo"></div>
+    </div>
+  </div>
+
+  <div class="letter-image" onclick="openLetter(this)">
+    <div class="animated-mail">
+      <div class="letter"><img src="img2.jpg" class="photo"></div>
+    </div>
+  </div>
+
+  <div class="letter-image" onclick="openLetter(this)">
+    <div class="animated-mail">
+      <div class="letter"><img src="img3.jpg" class="photo"></div>
+    </div>
+  </div>
+
+  <div class="letter-image" onclick="openLetter(this)">
+    <div class="animated-mail">
+      <div class="letter"><img src="img4.jpg" class="photo"></div>
+    </div>
+  </div>
+
+  <div class="letter-image" onclick="openLetter(this)">
+    <div class="animated-mail">
+      <div class="letter"><img src="img5.jpg" class="photo"></div>
+    </div>
+  </div>
+
+</div>
+
+<button onclick="goFinal()" class="mt-5 bg-pink-500 text-white px-4 py-2 rounded-full">></button>
+
+</div>
+
+<!-- PAGE 6 (FINAL CARD ORIGINAL TAILWIND) -->
+<div id="page6" class="page">
+
+<div class="card">
+  <div class="relative bg-black w-[300px] group transition-all duration-700 aspect-video flex items-center justify-center">
+    <div class="transition-all flex flex-col items-center py-5 justify-start duration-300 bg-white w-full h-full absolute group-hover:-translate-y-16">
+      
+      <p class="text-xl font-semibold text-pink-500">For You ❤️</p>
+
+      <p class="px-5 text-xs text-gray-700 text-center">
+        Tumi amar life er shobcheye special 💖  
+        Tomar sathe thaka protita moment amar jonno priceless 😌  
+        Ami tomake onek bhalobashi ❤️
+      </p>
+
+      <p class="text-xs text-gray-600 pt-3">– Yours Joni 💌</p>
+
+    </div>
+
+    <button class="bg-pink-500 text-white w-10 h-10 rounded-full">❤️</button>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+
+function startApp(){
+  bgMusic.play().catch(()=>{});
+  page1.classList.remove("active");
+  page2.classList.add("active");
+}
+
+function goScanner(e){
+  e.preventDefault();
+  let pass=document.querySelectorAll("input")[1].value;
+
+  if(pass==="Sannu"){
+    errorMsg.classList.add("hidden");
+    page2.classList.remove("active");
+    page3.classList.add("active");
+  }else{
+    errorMsg.classList.remove("hidden");
+  }
+}
+
+function startCamera(){
+  navigator.mediaDevices.getUserMedia({video:true})
+  .then(stream=>{
+    camera.srcObject=stream;
+    scannerBox.classList.remove("hidden");
+
+    setTimeout(()=>{
+      scanStatus.innerText="Scanning Done ✅";
+
+      setTimeout(()=>{
+        page3.classList.remove("active");
+        page4.classList.add("active");
+
+        setTimeout(()=>{
+          page4.classList.remove("active");
+          page5.classList.add("active");
+        },4000);
+
+      },1000);
+
+    },3000);
+  });
+}
+
+function openLetter(el){
+  el.classList.toggle("open");
+}
+
+function goFinal(){
+  page5.classList.remove("active");
+  page6.classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
